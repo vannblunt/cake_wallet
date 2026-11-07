@@ -1,0 +1,53 @@
+workflows:
+  tixs-ios-simulator:
+    name: Tixs iOS Simulator
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      - name: Install Rust
+        script: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+
+      - name: Prepare torch_dart
+        script: bash scripts/prepare_torch.sh
+
+      - name: Prepare reown_flutter (clone only, skip codegen)
+        script: |
+          HASH=8a6d79ef7a268c493eeba45feef9991eea119bbd
+          cd scripts
+          if [[ ! -d "reown_flutter/.git" ]]; then
+            rm -rf reown_flutter
+            git clone https://github.com/cake-tech/reown_flutter
+          fi
+          cd reown_flutter
+          git fetch -a
+          git reset --hard
+          git checkout $HASH
+          git reset --hard
+
+      - name: Configure Tixs (generates Info.plist + pubspec.yaml + pub get)
+        script: bash configure_tixs.sh ios
+
+      - name: Pod install
+        script: |
+          cd ios
+          pod install
+
+      - name: Build iOS Simulator
+        script: |
+          source $HOME/.cargo/env
+          flutter build ios \
+            --simulator \
+            --debug \
+            --target lib/main_tixs.dart \
+            --no-codesign
+
+    artifacts:
+      - build/ios/iphonesimulator/**/*.app
