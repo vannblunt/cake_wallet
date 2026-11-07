@@ -2,23 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'tixs_auth_bridge.dart';
 import 'tixs_theme.dart';
+import 'tixs_wallet_tab.dart';
 import 'tixs_webview_tab.dart';
 
 /// Bottom-navigation shell: Events | My Tickets | Wallet | Profile
 ///
 /// WebView tabs (Events, My Tickets, Profile) are persistent via IndexedStack
-/// so navigation state survives tab switches. The Wallet tab surfaces
-/// Cake's existing Solana wallet UI.
+/// so navigation state survives tab switches. The Wallet tab hosts the
+/// self-custody Solana wallet (create / restore / dashboard).
 class TixsNavShell extends StatefulWidget {
   const TixsNavShell({
     super.key,
     required this.authBridge,
-    required this.walletTab,
   });
 
   final TixsAuthBridge authBridge;
-  /// The Cake wallet widget to show on the Wallet tab.
-  final Widget walletTab;
 
   @override
   State<TixsNavShell> createState() => _TixsNavShellState();
@@ -50,7 +48,7 @@ class _TixsNavShellState extends State<TixsNavShell> {
         children: List.generate(_tabs.length, (i) {
           final tab = _tabs[i];
           if (tab.url == null) {
-            return widget.walletTab;
+            return const TixsWalletTab();
           }
           return TixsWebViewTab(
             key: _webViewKeys[i],

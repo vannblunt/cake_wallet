@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'tixs_auth_bridge.dart';
 import 'tixs_nav_shell.dart';
 import 'tixs_theme.dart';
-import 'tixs_wallet_tab.dart';
 
 /// Tixs app root.
 ///
@@ -48,7 +47,6 @@ class _TixsHomeState extends State<TixsHome> {
   Widget build(BuildContext context) {
     return TixsNavShell(
       authBridge: _authBridge,
-      walletTab: const TixsWalletTab(),
     );
   }
 }
