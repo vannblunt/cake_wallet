@@ -1,19 +1,23 @@
 
 
 analyzer:
-  exclude: [
-    build/**,
-    scripts/**,
-    lib/**.g.dart,
-    cw_core/lib/**.g.dart,
-    cw_haven/lib/**.g.dart,
-    cw_monero/lib/**.g.dart,
-    cw_mweb/lib/**.g.dart,
-    lib/generated/*.dart,
-    cw_monero/ios/External/**,
-    cw_shared_external/**,
-    shared_external/**,
-    ]
+  exclude:
+    - build/**
+    - scripts/**
+    - lib/**.g.dart
+    - cw_core/lib/**.g.dart
+    - cw_haven/lib/**.g.dart
+    - cw_monero/lib/**.g.dart
+    - cw_mweb/lib/**.g.dart
+    - lib/generated/*.dart
+    - cw_monero/ios/External/**
+    - cw_shared_external/**
+    - shared_external/**
+    - android/**
+    - ios/**
+    - windows/**
+    - macos/**
+    - linux/**
   language:
     strict-casts: true
     strict-raw-types: true

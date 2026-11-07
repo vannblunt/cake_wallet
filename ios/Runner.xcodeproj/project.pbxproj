@@ -18,7 +18,6 @@
 		724FDA327BF191BC29DCAA2E /* Constants.swift in Resources */ = {isa = PBXBuildFile; fileRef = 0CCA7ADAD6FF9185EBBB2BCA /* Constants.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		73138617307FA4F838D21D62 /* ServiceLogger.swift in Resources */ = {isa = PBXBuildFile; fileRef = F42258C3697CFE3C8C8D1933 /* ServiceLogger.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
-		8482AC522FBB29FF00FFF059 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8482AC512FBB29FF00FFF059 /* AppIcon.icon */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -26,15 +25,13 @@
 		A1B4A70C9CFA13AB71662216 /* LnurlPay.swift in Resources */ = {isa = PBXBuildFile; fileRef = 7D3364C03978A8A74B6D586E /* LnurlPay.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		A3D5E17CC53DF13FA740DEFA /* RedeemSwap.swift in Resources */ = {isa = PBXBuildFile; fileRef = 9D2F2C9F2555316C95EE7EA3 /* RedeemSwap.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		B6C6E59403ACDE44724C12F4 /* ServiceConfig.swift in Resources */ = {isa = PBXBuildFile; fileRef = B3D5E78267F5F18D882FDC3B /* ServiceConfig.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
-		CE918BF82D533ECE007F186E /* MoneroWallet.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE918BF72D533ECE007F186E /* MoneroWallet.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE918BFA2D533ED4007F186E /* WowneroWallet.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE918BF92D533ED4007F186E /* WowneroWallet.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE918BFC2D533ED8007F186E /* ZanoWallet.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE918BFB2D533ED8007F186E /* ZanoWallet.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEAFE4A02C53926F009FF3AD /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C58D93382C00FAC6004BCF69 /* libresolv.tbd */; };
 		CFEFC24F82F78FE747DF1D22 /* LnurlPayInfo.swift in Resources */ = {isa = PBXBuildFile; fileRef = 58C22CBD8C22B9D6023D59F8 /* LnurlPayInfo.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		D0D7A0D4E13F31C4E02E235B /* ReceivePayment.swift in Resources */ = {isa = PBXBuildFile; fileRef = 91C524F800843E0A3F17E004 /* ReceivePayment.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		D3AD73A327249AFE8F016A51 /* BreezSDK.swift in Resources */ = {isa = PBXBuildFile; fileRef = ABD6FCBB0F4244B090459128 /* BreezSDK.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
 		DEFA2C5D144BDA06A9C287DC /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478EFCC3C0760ED97FFE561 /* Pods_Runner.framework */; };
 		F5EE19868D6F10D814BF73AD /* SDKNotificationService.swift in Resources */ = {isa = PBXBuildFile; fileRef = 41102141140E57B1DC27FBA1 /* SDKNotificationService.swift */; settings = {ASSET_TAGS = (BreezSDK, ); }; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,9 +41,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE918BF82D533ECE007F186E /* MoneroWallet.xcframework in CopyFiles */,
-				CE918BFA2D533ED4007F186E /* WowneroWallet.xcframework in CopyFiles */,
-				CE918BFC2D533ED8007F186E /* ZanoWallet.xcframework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +66,6 @@
 		78D25C60B94E9D9E48D52E5E /* ResourceHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ResourceHelper.swift; path = "../.symlinks/plugins/breez_sdk/ios/bindings-swift/Sources/BreezSDK/ResourceHelper.swift"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7D3364C03978A8A74B6D586E /* LnurlPay.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LnurlPay.swift; path = "../.symlinks/plugins/breez_sdk/ios/bindings-swift/Sources/BreezSDK/Task/LnurlPay.swift"; sourceTree = "<group>"; };
-		8482AC512FBB29FF00FFF059 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		91C524F800843E0A3F17E004 /* ReceivePayment.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReceivePayment.swift; path = "../.symlinks/plugins/breez_sdk/ios/bindings-swift/Sources/BreezSDK/Task/ReceivePayment.swift"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -87,14 +80,11 @@
 		B3D5E78267F5F18D882FDC3B /* ServiceConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceConfig.swift; path = "../.symlinks/plugins/breez_sdk/ios/bindings-swift/Sources/BreezSDK/ServiceConfig.swift"; sourceTree = "<group>"; };
 		B478EFCC3C0760ED97FFE561 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C58D93382C00FAC6004BCF69 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
-		CE918BF72D533ECE007F186E /* MoneroWallet.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = MoneroWallet.xcframework; sourceTree = "<group>"; };
-		CE918BF92D533ED4007F186E /* WowneroWallet.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = WowneroWallet.xcframework; sourceTree = "<group>"; };
-		CE918BFB2D533ED8007F186E /* ZanoWallet.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = ZanoWallet.xcframework; sourceTree = "<group>"; };
-		CEFC07A12EF2EEEB0012DB29 /* WarpApiFFI.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WarpApiFFI.xcframework; path = ../../zcash_lib/WarpApiFFI.xcframework; sourceTree = "<group>"; };
 		D67E45DEB6E9449D981B35E0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		DCEA540E3586164FB47AD13E /* LnurlPayInvoice.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LnurlPayInvoice.swift; path = "../.symlinks/plugins/breez_sdk/ios/bindings-swift/Sources/BreezSDK/Task/LnurlPayInvoice.swift"; sourceTree = "<group>"; };
 		F2F2EF79B5A1520AF76225B9 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		F42258C3697CFE3C8C8D1933 /* ServiceLogger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceLogger.swift; path = "../.symlinks/plugins/breez_sdk/ios/bindings-swift/Sources/BreezSDK/ServiceLogger.swift"; sourceTree = "<group>"; };
+		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				CEAFE4A02C53926F009FF3AD /* libresolv.tbd in Frameworks */,
 				DEFA2C5D144BDA06A9C287DC /* Pods_Runner.framework in Frameworks */,
 			);
@@ -113,10 +104,6 @@
 		06957875428D0F5AAE053765 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE918BFB2D533ED8007F186E /* ZanoWallet.xcframework */,
-				CE918BF92D533ED4007F186E /* WowneroWallet.xcframework */,
-				CE918BF72D533ECE007F186E /* MoneroWallet.xcframework */,
-				CEFC07A12EF2EEEB0012DB29 /* WarpApiFFI.xcframework */,
 				C58D93382C00FAC6004BCF69 /* libresolv.tbd */,
 				0C9986A3251A932F00D566FD /* CryptoSwift.framework */,
 				B478EFCC3C0760ED97FFE561 /* Pods_Runner.framework */,
@@ -156,6 +143,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -173,7 +161,6 @@
 				97C146EF1CF9000F007C117D /* Products */,
 				84389F1A05D5860790D82820 /* Pods */,
 				06957875428D0F5AAE053765 /* Frameworks */,
-				8482AC512FBB29FF00FFF059 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -226,6 +213,9 @@
 
 /* Begin PBXNativeTarget section */
 		97C146ED1CF9000F007C117D /* Runner */ = {
+			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
+			);
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
@@ -252,6 +242,9 @@
 
 /* Begin PBXProject section */
 		97C146E61CF9000F007C117D /* Project object */ = {
+			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
+			);
 			isa = PBXProject;
 			attributes = {
 				KnownAssetTags = (
@@ -300,7 +293,6 @@
 				2193F104374FA2746CE8945B /* ResourceHelper.swift in Resources */,
 				F5EE19868D6F10D814BF73AD /* SDKNotificationService.swift in Resources */,
 				B6C6E59403ACDE44724C12F4 /* ServiceConfig.swift in Resources */,
-				8482AC522FBB29FF00FFF059 /* AppIcon.icon in Resources */,
 				73138617307FA4F838D21D62 /* ServiceLogger.swift in Resources */,
 				495FEFF9B395392FED3425DE /* TaskProtocol.swift in Resources */,
 				A1B4A70C9CFA13AB71662216 /* LnurlPay.swift in Resources */,
@@ -749,6 +741,18 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin XCLocalSwiftPackageReference section */
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+/* Begin XCSwiftPackageProductDependency section */
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

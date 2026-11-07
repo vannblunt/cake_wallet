@@ -3,6 +3,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/functions.sh"
 set -x -e
 MONERO_COM="monero.com"
 CAKEWALLET="cakewallet"
+TIXS="tixs"
 DIR=`pwd`
 
 if [ -z "$APP_IOS_TYPE" ]; then
@@ -32,6 +33,11 @@ case $APP_IOS_TYPE in
 
         $CAKEWALLET)
 		CONFIG_ARGS="--monero --bitcoin --ethereum --polygon --nano --bitcoinCash --solana --tron --wownero --zano --decred --dogecoin --base --zcash --arbitrum --bsc --robinhood"
+		;;
+
+	$TIXS)
+		# Tixs: Solana only. No Monero native libs required for initial build.
+		CONFIG_ARGS="--solana"
 		;;
 esac
 

@@ -1,0 +1,68 @@
+name: Tixs iOS Build (Simulator)
+
+on:
+  push:
+    branches: [tixs-dev]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+      - name: Add Rust to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+          channel: 'stable'
+          cache: true
+
+      - name: Prepare torch_dart
+        run: bash scripts/prepare_torch.sh
+
+      - name: Prepare reown_flutter
+        run: bash scripts/prepare_reown.sh
+
+      - name: Configure Tixs (generates Info.plist + pubspec.yaml + runs pub get)
+        run: bash configure_tixs.sh ios
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: pods-
+
+      - name: Pod install
+        run: pod install
+        working-directory: ios
+
+      - name: Build iOS Simulator
+        run: |
+          source $HOME/.cargo/env
+          flutter build ios \
+            --simulator \
+            --debug \
+            --target lib/main_tixs.dart \
+            --no-codesign
+
+      - name: Package .app for download
+        run: |
+          APP_PATH=$(find build/ios/iphonesimulator -name "*.app" | head -1)
+          zip -r tixs-simulator.zip "$APP_PATH"
+
+      - name: Upload simulator build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tixs-ios-simulator
+          path: tixs-simulator.zip
+          retention-days: 7

@@ -548,66 +548,10 @@ packages:
       url: "https://github.com/flutter/packages"
     source: git
     version: "1.0.9"
-  cw_bitcoin:
-    dependency: "direct main"
-    description:
-      path: cw_bitcoin
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_bitcoin_cash:
-    dependency: "direct main"
-    description:
-      path: cw_bitcoin_cash
-      relative: true
-    source: path
-    version: "0.0.1"
   cw_core:
     dependency: "direct main"
     description:
       path: cw_core
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_decred:
-    dependency: "direct main"
-    description:
-      path: cw_decred
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_dogecoin:
-    dependency: "direct main"
-    description:
-      path: cw_dogecoin
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_evm:
-    dependency: "direct main"
-    description:
-      path: cw_evm
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_monero:
-    dependency: "direct main"
-    description:
-      path: cw_monero
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_mweb:
-    dependency: transitive
-    description:
-      path: cw_mweb
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_nano:
-    dependency: "direct main"
-    description:
-      path: cw_nano
       relative: true
     source: path
     version: "0.0.1"
@@ -618,34 +562,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
-  cw_tron:
+  cw_tixs:
     dependency: "direct main"
     description:
-      path: cw_tron
+      path: "../cw_tixs"
       relative: true
     source: path
-    version: "0.0.1"
-  cw_wownero:
-    dependency: "direct main"
-    description:
-      path: cw_wownero
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_zano:
-    dependency: "direct main"
-    description:
-      path: cw_zano
-      relative: true
-    source: path
-    version: "0.0.1"
-  cw_zcash:
-    dependency: "direct main"
-    description:
-      path: cw_zcash
-      relative: true
-    source: path
-    version: "1.0.0"
+    version: "0.1.0"
   dart_style:
     dependency: "direct overridden"
     description:
@@ -2013,10 +1936,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
+      sha256: "307249ce4ff29d58a18e97f6345f539382eb9c9c29ecda628900f31de0443dd9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.0"
+    version: "1.19.0"
   mime:
     dependency: "direct overridden"
     description:
@@ -2459,7 +2382,7 @@ packages:
     source: git
     version: "5.0.5"
   progressive_blur:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "."
       ref: "6ec8d0ccf46b1629a46ab68f31e26df489bac958"
@@ -3488,7 +3411,7 @@ packages:
     source: git
     version: "6.5.0"
   yaml:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "pkgs/yaml"
       ref: "27f829e3752382beae9deb1e87029f9ed52ef32e"
@@ -3515,5 +3438,5 @@ packages:
     source: git
     version: "6.35.0"
 sdks:
-  dart: ">=3.10.0 <4.0.0"
+  dart: ">=3.11.0-0 <4.0.0"
   flutter: ">=3.38.0"

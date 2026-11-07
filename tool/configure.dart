@@ -1882,6 +1882,10 @@ Future<void> generatePubspec({
   cw_core:
     path: ./cw_core
     """;
+  const cwTixs = """
+  cw_tixs:
+    path: ./cw_tixs
+  """;
   const cwMonero = """
   cw_monero:
     path: ./cw_monero
@@ -1949,7 +1953,7 @@ Future<void> generatePubspec({
       // On Windows it could contains `\r` (Carriage Return). It could be fixed in newer dart versions.
       ? line.toLowerCase() == 'dependencies:\r' || line.toLowerCase() == 'dependencies:'
       : line.toLowerCase() == 'dependencies:');
-  var output = cwCore;
+  var output = cwCore + '\n$cwTixs';
 
   if (hasMonero) {
     output += '\n$cwMonero';
