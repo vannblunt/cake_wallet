@@ -29,7 +29,19 @@ jobs:
         run: bash scripts/prepare_torch.sh
 
       - name: Prepare reown_flutter
-        run: bash scripts/prepare_reown.sh
+        run: |
+          cd scripts
+          HASH=8a6d79ef7a268c493eeba45feef9991eea119bbd
+          if [[ ! -d "reown_flutter/.git" ]]; then
+            rm -rf reown_flutter
+            git clone https://github.com/cake-tech/reown_flutter
+          fi
+          cd reown_flutter
+          git fetch -a
+          git reset --hard
+          git checkout $HASH
+          git reset --hard
+          # Skip generate_all.sh (build_runner codegen) — not needed for Tixs
 
       - name: Configure Tixs (generates Info.plist + pubspec.yaml + runs pub get)
         run: bash configure_tixs.sh ios
