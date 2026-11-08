@@ -58,7 +58,7 @@ class TixsSolanaWallet {
   Future<void> _derive(String mnemonic) async {
     final seed = bip39MnemonicToSeed(mnemonic);
     final bip44 = Bip44.fromSeed(seed, Bip44Coins.solana);
-    final childKey = bip44.purpose.coin.account(0).change(0).addressIndex(0);
+    final childKey = bip44.purpose.coin.account(0).change(Bip44Changes.chainExternal).addressIndex(0);
     _privateKey = SolanaPrivateKey.fromSeed(childKey.privateKey.raw);
     _address = _privateKey!.publicKey().toAddress().address;
     await _storage.write(key: _addressKey, value: _address);
