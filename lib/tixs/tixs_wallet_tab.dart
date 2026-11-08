@@ -160,9 +160,9 @@ class _CreateWalletPageState extends State<_CreateWalletPage> {
   Widget build(BuildContext context) {
     final words = widget.mnemonic.split(' ');
     return Scaffold(
-      backgroundColor: TixsTheme.background,
+      backgroundColor: TixsTheme.surface,
       appBar: AppBar(
-        backgroundColor: TixsTheme.background,
+        backgroundColor: TixsTheme.surface,
         title: const Text('Recovery Phrase',
             style: TextStyle(color: TixsTheme.onSurface)),
         iconTheme: const IconThemeData(color: TixsTheme.onSurface),
@@ -270,9 +270,9 @@ class _RestoreWalletPageState extends State<_RestoreWalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TixsTheme.background,
+      backgroundColor: TixsTheme.surface,
       appBar: AppBar(
-        backgroundColor: TixsTheme.background,
+        backgroundColor: TixsTheme.surface,
         title: const Text('Restore Wallet',
             style: TextStyle(color: TixsTheme.onSurface)),
         iconTheme: const IconThemeData(color: TixsTheme.onSurface),
