@@ -53,7 +53,9 @@ class NftClaimResult {
 /// Private keys never leave the device; only the Ed25519 signature is sent.
 class TixsNftService {
   static const _baseUrl = 'https://tixs.ai';
-  static const _devnetRpc = 'https://api.devnet.solana.com';
+  // Helius devnet RPC supports Metaplex DAS (getAssetsByOwner).
+  // Standard api.devnet.solana.com does not.
+  static const _devnetDas = 'https://devnet.helius-rpc.com/?api-key=65a0c74b-f2f1-4098-8876-d0097d1c61d6';
 
   final TixsAuthBridge _auth;
 
@@ -131,7 +133,7 @@ class TixsNftService {
   Future<List<TixsCollectible>> _fetchViaDas(String walletAddress) async {
     try {
       final res = await http.post(
-        Uri.parse(_devnetRpc),
+        Uri.parse(_devnetDas),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'jsonrpc': '2.0',
