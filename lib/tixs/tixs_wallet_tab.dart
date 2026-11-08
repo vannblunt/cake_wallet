@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'tixs_nft_service.dart';
 import 'tixs_solana_wallet.dart';
 import 'tixs_theme.dart';
 
 class TixsWalletTab extends StatefulWidget {
-  const TixsWalletTab({super.key});
+  const TixsWalletTab({
+    super.key,
+    required this.wallet,
+    required this.nftService,
+    required this.refreshNotifier,
+  });
+
+  final TixsSolanaWallet wallet;
+  final TixsNftService nftService;
+  final ValueNotifier<int> refreshNotifier;
 
   @override
   State<TixsWalletTab> createState() => _TixsWalletTabState();
 }
 
 class _TixsWalletTabState extends State<TixsWalletTab> {
-  final _wallet = TixsSolanaWallet();
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _wallet.load().then((_) => setState(() => _loading = false));
-  }
-
   void _refresh() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return const Center(child: CircularProgressIndicator(color: TixsTheme.primary));
+    if (widget.wallet.isLoaded) {
+      return _WalletDashboard(
+        wallet: widget.wallet,
+        nftService: widget.nftService,
+        refreshNotifier: widget.refreshNotifier,
+        onClear: () async {
+          await widget.wallet.clear();
+          _refresh();
+        },
+      );
     }
-    if (_wallet.isLoaded) {
-      return _WalletDashboard(wallet: _wallet, onClear: () async {
-        await _wallet.clear();
-        _refresh();
-      });
-    }
-    return _WalletEmpty(wallet: _wallet, onWalletSaved: _refresh);
+    return _WalletEmpty(wallet: widget.wallet, onWalletSaved: _refresh);
   }
 }
 
@@ -353,14 +356,52 @@ class _RestoreWalletPageState extends State<_RestoreWalletPage> {
 
 // ── Wallet dashboard ──────────────────────────────────────────────────────────
 
-class _WalletDashboard extends StatelessWidget {
-  const _WalletDashboard({required this.wallet, required this.onClear});
+class _WalletDashboard extends StatefulWidget {
+  const _WalletDashboard({
+    required this.wallet,
+    required this.nftService,
+    required this.refreshNotifier,
+    required this.onClear,
+  });
+
   final TixsSolanaWallet wallet;
+  final TixsNftService nftService;
+  final ValueNotifier<int> refreshNotifier;
   final VoidCallback onClear;
 
   @override
+  State<_WalletDashboard> createState() => _WalletDashboardState();
+}
+
+class _WalletDashboardState extends State<_WalletDashboard> {
+  List<TixsCollectible>? _collectibles;
+  bool _loadingNfts = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.refreshNotifier.addListener(_onRefresh);
+    _fetchCollectibles();
+  }
+
+  @override
+  void dispose() {
+    widget.refreshNotifier.removeListener(_onRefresh);
+    super.dispose();
+  }
+
+  void _onRefresh() => _fetchCollectibles();
+
+  Future<void> _fetchCollectibles() async {
+    setState(() => _loadingNfts = true);
+    final address = widget.wallet.address ?? '';
+    final items = await widget.nftService.fetchCollectibles(address);
+    if (mounted) setState(() { _collectibles = items; _loadingNfts = false; });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final address = wallet.address ?? '';
+    final address = widget.wallet.address ?? '';
     final short = address.length > 16
         ? '${address.substring(0, 8)}…${address.substring(address.length - 8)}'
         : address;
@@ -372,6 +413,7 @@ class _WalletDashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 16),
+            // Wallet card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -423,32 +465,25 @@ class _WalletDashboard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text('Collectibles',
-                style: TextStyle(
-                    color: TixsTheme.onSurface,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600)),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: TixsTheme.surfaceCard,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Column(
-                children: [
-                  Icon(Icons.collections_outlined,
-                      size: 40, color: TixsTheme.onSurfaceMuted),
-                  SizedBox(height: 8),
-                  Text('No collectibles yet',
-                      style: TextStyle(color: TixsTheme.onSurfaceMuted)),
-                  SizedBox(height: 4),
-                  Text('Claim an NFT ticket to see it here',
-                      style: TextStyle(
-                          color: TixsTheme.onSurfaceMuted, fontSize: 12)),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Collectibles',
+                    style: TextStyle(
+                        color: TixsTheme.onSurface,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600)),
+                if (!_loadingNfts)
+                  IconButton(
+                    icon: const Icon(Icons.refresh,
+                        color: TixsTheme.onSurfaceMuted, size: 18),
+                    onPressed: _fetchCollectibles,
+                    tooltip: 'Refresh collectibles',
+                  ),
+              ],
             ),
+            const SizedBox(height: 12),
+            _buildCollectibles(),
             const SizedBox(height: 32),
             TextButton(
               onPressed: () => _confirmRemove(context),
@@ -458,6 +493,52 @@ class _WalletDashboard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCollectibles() {
+    if (_loadingNfts) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 32),
+        child: Center(
+          child: CircularProgressIndicator(color: TixsTheme.primary, strokeWidth: 2),
+        ),
+      );
+    }
+    final items = _collectibles ?? [];
+    if (items.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: TixsTheme.surfaceCard,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Column(
+          children: [
+            Icon(Icons.collections_outlined,
+                size: 40, color: TixsTheme.onSurfaceMuted),
+            SizedBox(height: 8),
+            Text('No collectibles yet',
+                style: TextStyle(color: TixsTheme.onSurfaceMuted)),
+            SizedBox(height: 4),
+            Text('Claim an NFT ticket to see it here',
+                style: TextStyle(
+                    color: TixsTheme.onSurfaceMuted, fontSize: 12)),
+          ],
+        ),
+      );
+    }
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 0.85,
+      ),
+      itemCount: items.length,
+      itemBuilder: (_, i) => _CollectibleCard(item: items[i]),
     );
   }
 
@@ -479,10 +560,85 @@ class _WalletDashboard extends StatelessWidget {
               child: const Text('Cancel',
                   style: TextStyle(color: TixsTheme.primary))),
           TextButton(
-              onPressed: () { Navigator.pop(ctx); onClear(); },
+              onPressed: () { Navigator.pop(ctx); widget.onClear(); },
               child: const Text('Remove',
                   style: TextStyle(color: Colors.red))),
         ],
+      ),
+    );
+  }
+}
+
+// ── Collectible card ──────────────────────────────────────────────────────────
+
+class _CollectibleCard extends StatelessWidget {
+  const _CollectibleCard({required this.item});
+  final TixsCollectible item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: TixsTheme.surfaceCard,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              child: item.imageUri != null
+                  ? Image.network(
+                      item.imageUri!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _ImagePlaceholder(),
+                    )
+                  : _ImagePlaceholder(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: const TextStyle(
+                      color: TixsTheme.onSurface,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (item.collectionName != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    item.collectionName!,
+                    style: const TextStyle(
+                        color: TixsTheme.onSurfaceMuted, fontSize: 11),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ImagePlaceholder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF1C1030),
+      child: const Center(
+        child: Icon(Icons.confirmation_number_outlined,
+            size: 36, color: TixsTheme.primary),
       ),
     );
   }

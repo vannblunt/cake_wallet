@@ -14,11 +14,16 @@ class TixsWebViewTab extends StatefulWidget {
     required this.initialUrl,
     required this.authBridge,
     this.onSignIn,
+    this.onNativeMessage,
   });
 
   final String initialUrl;
   final TixsAuthBridge authBridge;
   final VoidCallback? onSignIn;
+
+  /// Called when JavaScript invokes `window.flutter_inappwebview.callHandler('tixsNative', msg)`.
+  /// Return value is passed back to the JS caller as the handler's resolved value.
+  final Future<Map<String, dynamic>> Function(Map<String, dynamic>)? onNativeMessage;
 
   @override
   State<TixsWebViewTab> createState() => _TixsWebViewTabState();
@@ -51,7 +56,24 @@ class _TixsWebViewTabState extends State<TixsWebViewTab> {
         InAppWebView(
           initialUrlRequest: URLRequest(url: WebUri(widget.initialUrl)),
           initialSettings: _settings(),
-          onWebViewCreated: (c) => _controller = c,
+          onWebViewCreated: (c) {
+            _controller = c;
+            final handler = widget.onNativeMessage;
+            if (handler != null) {
+              c.addJavaScriptHandler(
+                handlerName: 'tixsNative',
+                callback: (args) async {
+                  try {
+                    final msg = args.isNotEmpty ? args.first : null;
+                    if (msg is! Map) return <String, dynamic>{'error': 'invalid message'};
+                    return await handler(Map<String, dynamic>.from(msg as Map));
+                  } catch (e) {
+                    return <String, dynamic>{'error': e.toString()};
+                  }
+                },
+              );
+            }
+          },
           onLoadStart: (_, __) => setState(() => _loading = true),
           onProgressChanged: (_, p) => setState(() => _progress = p / 100),
           onLoadStop: (_, url) async {
