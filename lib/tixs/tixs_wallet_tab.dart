@@ -635,7 +635,9 @@ class _ClaimSheetState extends State<_ClaimSheet> {
         left: 24,
         right: 24,
         top: 24,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 32,
+        bottom: MediaQuery.of(context).viewInsets.bottom +
+            MediaQuery.of(context).padding.bottom +
+            32,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
