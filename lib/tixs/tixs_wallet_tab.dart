@@ -473,13 +473,24 @@ class _WalletDashboardState extends State<_WalletDashboard> {
                         color: TixsTheme.onSurface,
                         fontSize: 16,
                         fontWeight: FontWeight.w600)),
-                if (!_loadingNfts)
-                  IconButton(
-                    icon: const Icon(Icons.refresh,
-                        color: TixsTheme.onSurfaceMuted, size: 18),
-                    onPressed: _fetchCollectibles,
-                    tooltip: 'Refresh collectibles',
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (!_loadingNfts)
+                      IconButton(
+                        icon: const Icon(Icons.refresh,
+                            color: TixsTheme.onSurfaceMuted, size: 18),
+                        onPressed: _fetchCollectibles,
+                        tooltip: 'Refresh collectibles',
+                      ),
+                    IconButton(
+                      icon: const Icon(Icons.add,
+                          color: TixsTheme.primary, size: 20),
+                      onPressed: () => _openClaimSheet(context),
+                      tooltip: 'Claim NFT ticket',
+                    ),
+                  ],
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -542,6 +553,24 @@ class _WalletDashboardState extends State<_WalletDashboard> {
     );
   }
 
+  void _openClaimSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: TixsTheme.surfaceCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => _ClaimSheet(
+        wallet: widget.wallet,
+        nftService: widget.nftService,
+        onClaimed: () {
+          widget.refreshNotifier.value++;
+        },
+      ),
+    );
+  }
+
   void _confirmRemove(BuildContext context) {
     showDialog<bool>(
       context: context,
@@ -566,6 +595,189 @@ class _WalletDashboardState extends State<_WalletDashboard> {
         ],
       ),
     );
+  }
+}
+
+// ── Claim sheet ───────────────────────────────────────────────────────────────
+
+enum _ClaimState { idle, claiming, success, error }
+
+class _ClaimSheet extends StatefulWidget {
+  const _ClaimSheet({
+    required this.wallet,
+    required this.nftService,
+    required this.onClaimed,
+  });
+  final TixsSolanaWallet wallet;
+  final TixsNftService nftService;
+  final VoidCallback onClaimed;
+
+  @override
+  State<_ClaimSheet> createState() => _ClaimSheetState();
+}
+
+class _ClaimSheetState extends State<_ClaimSheet> {
+  final _ctrl = TextEditingController();
+  _ClaimState _state = _ClaimState.idle;
+  String? _errorMsg;
+  NftClaimResult? _result;
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 32,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Claim NFT Ticket',
+                style: TextStyle(
+                    color: TixsTheme.onSurface,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, color: TixsTheme.onSurfaceMuted),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (_state == _ClaimState.idle || _state == _ClaimState.error) ...[
+            TextField(
+              controller: _ctrl,
+              style: const TextStyle(color: TixsTheme.onSurface),
+              decoration: InputDecoration(
+                hintText: 'Ticket ID',
+                hintStyle: const TextStyle(color: TixsTheme.onSurfaceMuted),
+                filled: true,
+                fillColor: TixsTheme.surface,
+                errorText: _state == _ClaimState.error ? _errorMsg : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _doClaim,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: TixsTheme.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Claim',
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
+            ),
+          ] else if (_state == _ClaimState.claiming) ...[
+            const SizedBox(height: 24),
+            const Center(
+              child: CircularProgressIndicator(
+                  color: TixsTheme.primary, strokeWidth: 2),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Signing & minting…',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: TixsTheme.onSurfaceMuted),
+            ),
+            const SizedBox(height: 24),
+          ] else if (_state == _ClaimState.success && _result != null) ...[
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0F2A1A),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFF16A34A)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.check_circle_outline,
+                          color: Color(0xFF16A34A), size: 20),
+                      SizedBox(width: 8),
+                      Text('NFT Claimed!',
+                          style: TextStyle(
+                              color: Color(0xFF16A34A),
+                              fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _result!.assetAddress,
+                    style: const TextStyle(
+                        color: TixsTheme.onSurface,
+                        fontFamily: 'monospace',
+                        fontSize: 12),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Network: ${_result!.network}',
+                    style: const TextStyle(
+                        color: TixsTheme.onSurfaceMuted, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: TixsTheme.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Done',
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _doClaim() async {
+    final ticketId = _ctrl.text.trim();
+    if (ticketId.isEmpty) {
+      setState(() {
+        _state = _ClaimState.error;
+        _errorMsg = 'Enter a ticket ID';
+      });
+      return;
+    }
+    setState(() { _state = _ClaimState.claiming; _errorMsg = null; });
+    try {
+      final result = await widget.nftService.claim(ticketId, widget.wallet);
+      widget.onClaimed();
+      if (mounted) setState(() { _state = _ClaimState.success; _result = result; });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _state = _ClaimState.error;
+          _errorMsg = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
+    }
   }
 }
 

@@ -77,8 +77,9 @@ class _TixsNavShellState extends State<TixsNavShell> {
         _collectibleRefresh.value++; // triggers wallet dashboard refresh
         return {
           'success': true,
-          'nftMint': result.nftMint,
-          'txSignature': result.txSignature,
+          'assetAddress': result.assetAddress,
+          'network': result.network,
+          'explorerUrl': result.explorerUrl,
         };
       } catch (e) {
         return {'success': false, 'error': e.toString()};

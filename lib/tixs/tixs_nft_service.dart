@@ -44,9 +44,14 @@ class TixsCollectible {
 }
 
 class NftClaimResult {
-  final String nftMint;
-  final String txSignature;
-  const NftClaimResult({required this.nftMint, required this.txSignature});
+  final String assetAddress;
+  final String network;
+  final String explorerUrl;
+  const NftClaimResult({
+    required this.assetAddress,
+    required this.network,
+    this.explorerUrl = '',
+  });
 }
 
 /// Orchestrates the NFT claim flow: challenge → sign → claim.
@@ -67,33 +72,36 @@ class TixsNftService {
   ) async {
     if (!wallet.isLoaded) throw StateError('Wallet not loaded');
 
-    final headers = await _auth.apiHeaders();
+    final baseHeaders = await _auth.apiHeaders();
+    // Add Origin so the backend allows the native-app request.
+    final headers = {...baseHeaders, 'Origin': _baseUrl};
 
-    // 1. Fetch challenge from Tixs backend
-    final challengeRes = await http.get(
-      Uri.parse('$_baseUrl/api/nft/challenge?wallet=${wallet.address}'),
+    // 1. Fetch challenge — ticketId is the path segment, wallet address in body
+    final challengeRes = await http.post(
+      Uri.parse('$_baseUrl/api/tickets/$ticketId/nft/challenge'),
       headers: headers,
+      body: jsonEncode({'wallet': wallet.address}),
     ).timeout(const Duration(seconds: 15));
 
     if (challengeRes.statusCode != 200) {
-      throw Exception('Challenge failed (${challengeRes.statusCode})');
+      throw Exception('Challenge failed (${challengeRes.statusCode}): ${challengeRes.body}');
     }
 
-    final challenge =
-        (jsonDecode(challengeRes.body) as Map<String, dynamic>)['challenge']
+    final message =
+        (jsonDecode(challengeRes.body) as Map<String, dynamic>)['message']
             as String;
 
-    // 2. Sign challenge locally — private key never leaves the device
-    final signature = await wallet.signMessage(challenge);
+    // 2. Sign challenge locally — private key never leaves the device;
+    //    TixsSolanaWallet.signMessage() returns a Base58-encoded Ed25519 signature.
+    final signature = await wallet.signMessage(message);
 
     // 3. Submit claim
     final claimRes = await http.post(
-      Uri.parse('$_baseUrl/api/nft/claim'),
+      Uri.parse('$_baseUrl/api/tickets/$ticketId/nft/claim'),
       headers: headers,
       body: jsonEncode({
-        'ticketId': ticketId,
         'wallet': wallet.address,
-        'challenge': challenge,
+        'message': message,
         'signature': signature,
       }),
     ).timeout(const Duration(seconds: 30));
@@ -103,9 +111,11 @@ class TixsNftService {
     }
 
     final d = jsonDecode(claimRes.body) as Map<String, dynamic>;
+    final claim = d['claim'] as Map<String, dynamic>? ?? d;
     return NftClaimResult(
-      nftMint: d['nftMint'] as String? ?? '',
-      txSignature: d['txSignature'] as String? ?? '',
+      assetAddress: claim['assetAddress'] as String? ?? '',
+      network: claim['network'] as String? ?? 'devnet',
+      explorerUrl: claim['explorer'] as String? ?? '',
     );
   }
 
